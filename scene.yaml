@@ -4,11 +4,38 @@ lights:
 
 cameras:
     camera1:
-        type: isometric
+        type: perspective
 scene:
     background:
        color: '#BED2FF'
 
+styles:
+    tilt:
+        base: points
+        animated: true
+        shaders:
+            blocks:
+                global: |
+                    mat3 rotateX3D(float phi){
+                        return mat3(
+                            vec3(1.,0.,0.),
+                            vec3(0.,cos(phi),-sin(phi)),
+                            vec3(0.,sin(phi),cos(phi)));
+                    }
+                    mat3 rotateZ3D(float psi){
+                        return mat3(
+                            vec3(cos(psi),-sin(psi),0.),
+                            vec3(sin(psi),cos(psi),0.),
+                            vec3(0.,0.,1.));
+                    }
+                position: |
+                    float t = u_time*0.05; 
+                    position.xyz = rotateX3D(.85) * rotateZ3D(sin(t*2.)*.5) * position.xyz;
+                    position.y -= 2000.;
+                    position.z -= 4000.;
+    tilt-lines:
+         base: lines
+         mix: tilt  
 sources:
     osm:
         type: TopoJSON
@@ -60,7 +87,7 @@ layers:
         data: {source: osm}
         # visible: false
         draw:
-            lines:
+            tilt-lines:
                 order: 0
                 color: blue
                 width: 1px
@@ -157,7 +184,7 @@ layers:
         data: {source: dem5a}
         # visible: false
         draw:
-            points:
+            tilt:
                 order: 7
                 # color: |
                 #     function() {
@@ -165,8 +192,8 @@ layers:
                 #         return [a, a, a];
                 #     }
                 color: gray
-                size: 8px
-                z: function() {return feature.alti * 4;}
+                size: 6px
+                z: function() {return feature.alti - 200}
                 # z: function() { return new Date().getMilliseconds()/10; }
     fgd:
         data: {source: fgd}
@@ -202,7 +229,7 @@ layers:
             filter:
                 class: WL
             draw:
-                lines:
+                tilt-lines:
                     order: 6
                     width: 4px
                     color: blue
@@ -210,7 +237,7 @@ layers:
             filter:
                 class: Cstline
             draw:
-                lines:
+                tilt-lines:
                     order: 6
                     width: 3px
                     color: blue

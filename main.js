@@ -4,7 +4,7 @@
 map = (function () {
     'use strict';
 
-    var map_start_location = [35.6900, 139.6920, 18]; // 東京 (Tokyo)
+    var map_start_location = [35.36055, 138.72903, 18]; // 富士山 (Mt. Fuji)
 
     /*** URL parsing ***/
 
